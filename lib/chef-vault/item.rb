@@ -40,7 +40,9 @@ class ChefVault
         results_returned = false
 
         query = Chef::Search::Query.new
-        query.search(:node, search)[0].each do |node|
+        windowsize = ENV.key?('CHEF_SEARCH_WINDOW_SIZE') ? ENV['CHEF_SEARCH_WINDOW_SIZE'].to_i : 1000
+        query.search(:node, search, 'X_CHEF_id_CHEF_X asc', 0, windowsize) do |node|
+          puts "chef-vault client search returned node #{node.name}"
           results_returned = true
 
           case action
